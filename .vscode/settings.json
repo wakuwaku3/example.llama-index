@@ -31,5 +31,7 @@
     ".pytest_cache": true,
     ".venv": true,
     "**/__pycache__": true,
-  }
+  },
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
 }

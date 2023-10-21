@@ -1,15 +1,15 @@
 from typing import Any, Dict, List
 
-from llama_index import NotionPageReader
+from llama_index import Document, NotionPageReader
 
-from args.args import Args
+from args.env import Env
 
 
 class Notion:
-    def __init__(self, args: Args) -> None:
-        self.args = args
-        self.reader = NotionPageReader(integration_token=args.env.notion_api_key)
+    def __init__(self, env: Env) -> None:
+        self.env = env
+        self.reader = NotionPageReader(integration_token=env.notion_api_key)
 
-    def get_ids(self, query_dict: Dict[str, Any]) -> List[str]:
-        ids = self.reader.query_database(self.args.notion_database_id, query_dict)
-        return ids
+    def get_documents(self, notion_database_id: str, query_dict: Dict[str, Any]) -> List[Document]:
+        ids = self.reader.query_database(notion_database_id, query_dict)
+        return self.reader.load_data(ids)

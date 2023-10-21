@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "~3.11"
 llama-index = "^0.8.48"
+google-cloud-storage = "^2.12.0"
 
 [tool.poetry.group.dev.dependencies]
 pyproject-flake8 = "^6.1.0"
@@ -22,21 +23,21 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 119
+line-length = 100
 
 [tool.isort]
 profile = "black"
 include_trailing_comma = true
-line_length = 119
+line_length = 100
 
 [tool.flake8]
-max-line-length = 119
+max-line-length = 100
 exclude = ".venv"
 
 [tool.pylint.'MESSAGES CONTROL']
-max-line-length = 119
+max-line-length = 100
 enable = "all"
-disable = "empty-docstring,missing-class-docstring,missing-function-docstring,missing-module-docstring,too-few-public-methods"
+disable = "empty-docstring,missing-class-docstring,missing-function-docstring,missing-module-docstring,too-few-public-methods,too-many-instance-attributes"
 
 [tool.mypy]
 disallow_untyped_calls = true
