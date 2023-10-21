@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "tushortz.python-extended-snippets",
+    "KevinRose.vsc-python-indent",
+    "mgesbert.python-path",
+    "littlefoxteam.vscode-python-test-adapter",
+    "matangover.mypy",
+    "ms-python.black-formatter",
+    "ms-python.flake8",
+    "DavidAnson.vscode-markdownlint",
+    "ms-python.pylint",
+    "kamilturek.vscode-pyproject-toml-snippets",
+    "ms-python.isort",
+    "github.vscode-github-actions"
+  ]
+}
