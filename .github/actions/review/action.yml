@@ -10,14 +10,20 @@ inputs:
   AZURE_OPEN_AI_ENDPOINT:
     description: 'URL of custom Azure Open AI API'
     required: true
+  AZURE_OPEN_AI_VERSION:
+    description: 'Version of custom Azure Open AI API'
+    required: true
   AZURE_OPEN_AI_MODEL_NAME:
-    description: 'URL of custom Azure Open AI model name'
+    description: 'Model Name of custom Azure Open AI'
     required: true
   AZURE_OPEN_AI_MODEL_DEPLOY_NAME:
-    description: 'URL of custom Azure Open AI model deploy name'
+    description: 'Model deploy name of custom Azure Open AI'
+    required: true
+  AZURE_OPEN_AI_EMBEDDING_MODEL_NAME:
+    description: 'Embedding model name of custom Azure Open AI'
     required: true
   AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME:
-    description: 'URL of custom Azure Open AI embedding model deploy name'
+    description: 'Embedding model deploy name of custom Azure Open AI'
     required: true
   GOOGLE_APPLICATION_CREDENTIALS_JSON:
     description: 'Google Application Credentials JSON'
@@ -81,6 +87,7 @@ runs:
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
+          AZURE_OPEN_AI_VERSION: ${{ inputs.AZURE_OPEN_AI_VERSION }}
           AZURE_OPEN_AI_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_NAME }}
           AZURE_OPEN_AI_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_DEPLOY_NAME }}
           AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_NAME }}
