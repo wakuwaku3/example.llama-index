@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 from langchain.chat_models import AzureChatOpenAI
@@ -66,6 +67,7 @@ class Api:
         index.storage_context.persist(persist_dir=self.env.storage_context_tmp_dir)
 
     def ask(self, query: str) -> None:
+        print(query, file=sys.stderr)
         service_context = self.get_service_context()
         storage_context = StorageContext.from_defaults(
             docstore=SimpleDocumentStore.from_persist_dir(

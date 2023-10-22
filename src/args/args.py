@@ -13,7 +13,7 @@ class Args:
         if self.action == "save":
             if len(self.args) > 2:
                 self.notion_database_id = args[2]
-                with open("./inputs/notion_document_query.json", encoding="utf-8") as f:
+                with open("./inputs/notion_database_query.json", encoding="utf-8") as f:
                     self.notion_query_json = f.read()
                     print(self.notion_query_json, file=sys.stderr)
             else:

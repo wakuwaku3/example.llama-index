@@ -40,7 +40,7 @@ inputs:
   NOTION_DATABASE_ID:
     description: 'Notion Database ID'
     required: false
-  NOTION_DOCEMUNT_QUERY:
+  NOTION_DATABASE_QUERY:
     description: 'JSON formatted Notion Database Fileter'
     required: false
     default: '{}'
@@ -72,9 +72,9 @@ runs:
       - name: Save Notion Document Indexes to Cloud Storage
         shell: bash
         run: |
-          echo ${{ inputs.NOTION_DOCEMUNT_QUERY }} > ./inputs/notion_document_query.json
-          echo ${{ inputs.NOTION_DOCEMUNT_IDS }} > ./inputs/notion_document_ids.json
-          poetry run python ./src/main.py save ${{ inputs.NOTION_DATABASE_ID }}
+          echo "${{ inputs.NOTION_DATABASE_QUERY }}" > ./inputs/notion_database_query.json
+          echo "${{ inputs.NOTION_DOCEMUNT_IDS }}" > ./inputs/notion_document_ids.json
+          poetry run python ./src/main.py save "${{ inputs.NOTION_DATABASE_ID }}"
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
