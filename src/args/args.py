@@ -15,10 +15,12 @@ class Args:
                 self.notion_database_id = args[2]
                 with open("./inputs/notion_document_query.json", encoding="utf-8") as f:
                     self.notion_query_json = f.read()
+                    print(self.notion_query_json, file=sys.stderr)
             else:
                 self.notion_database_id = None
             with open("./inputs/notion_document_ids.json", encoding="utf-8") as f:
                 self.notion_document_ids_json = f.read()
+                print(self.notion_document_ids_json, file=sys.stderr)
             assert self.notion_database_id is not None or self.notion_document_ids_json is not None
 
     def is_save(self) -> bool:
@@ -38,7 +40,9 @@ class Args:
 
     def get_prompt(self) -> str:
         with open("./inputs/prompt.md", encoding="utf-8") as f:
-            return f.read()
+            s = f.read()
+            print(s, file=sys.stderr)
+            return s
 
 
 def get_args() -> Args:
