@@ -1,6 +1,7 @@
 import json
 import sys
-from typing import Any, Dict
+import uuid
+from typing import Any, Dict, List
 
 
 class Args:
@@ -10,12 +11,15 @@ class Args:
         assert self.action in {"save", "review"}
 
         if self.action == "save":
-            self.notion_database_id = args[2]
-            self.notion_query_json = args[3]
-            assert self.notion_database_id is not None
-        else:
-            self.review_query = args[2]
-            assert self.review_query is not None
+            if len(self.args) > 2:
+                self.notion_database_id = args[2]
+                with open("./inputs/notion_document_query.json", encoding="utf-8") as f:
+                    self.notion_query_json = f.read()
+            else:
+                self.notion_database_id = None
+            with open("./inputs/notion_document_ids.json", encoding="utf-8") as f:
+                self.notion_document_ids_json = f.read()
+            assert self.notion_database_id is not None or self.notion_document_ids_json is not None
 
     def is_save(self) -> bool:
         return self.action == "save"
@@ -24,6 +28,17 @@ class Args:
         if self.notion_query_json is None:
             return {}
         return json.loads(self.notion_query_json)
+
+    def notion_document_ids(self) -> List[str]:
+        ids: List[str] = []
+        if self.notion_document_ids_json is not None:
+            for doc_id in json.loads(self.notion_document_ids_json):
+                ids.append(str(uuid.UUID(doc_id)))
+        return ids
+
+    def get_prompt(self) -> str:
+        with open("./inputs/prompt.md", encoding="utf-8") as f:
+            return f.read()
 
 
 def get_args() -> Args:

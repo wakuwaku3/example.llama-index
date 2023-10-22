@@ -13,17 +13,17 @@ class Env:
         self.azure_open_ai_version = os.environ.get("AZURE_OPEN_AI_VERSION", "")
         self.azure_open_ai_model_name = os.environ.get("AZURE_OPEN_AI_MODEL_NAME", "")
         self.azure_open_ai_model_deploy_name = os.environ.get("AZURE_OPEN_AI_MODEL_DEPLOY_NAME", "")
+        self.google_application_credentials_json = os.environ.get(
+            "GOOGLE_APPLICATION_CREDENTIALS_JSON", ""
+        )
         self.azure_open_ai_embedding_model_name = os.environ.get(
             "AZURE_OPEN_AI_EMBEDDING_MODEL_NAME", ""
         )
         self.azure_open_ai_embedding_model_deploy_name = os.environ.get(
             "AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME", ""
         )
-        self.google_application_credentials_json = os.environ.get(
-            "GOOGLE_APPLICATION_CREDENTIALS_JSON", ""
-        )
         self.google_index_bucket_name = os.environ.get("GOOGLE_INDEX_BUCKET_NAME", "")
-        self.google_index_file_name = os.environ.get("GOOGLE_INDEX_FILE_NAME", "")
+        self.google_index_file_name = os.environ.get("GOOGLE_INDEX_FILE_NAME", "index.zip")
         self.storage_context_tmp_dir = "./tmp/storage_context"
         self.storage_context_tmp_zip = "./tmp/storage_context.zip"
         shutil.rmtree("./tmp", ignore_errors=True)

@@ -1,0 +1,97 @@
+name: 'auto-gpt-review-with-preconditions'
+description: '前提条件を指定して GPT による PR レビューを行います'
+branding:
+  icon: 'eye'
+  color: 'gray-dark'
+inputs:
+  AZURE_OPEN_AI_KEY:
+    description: 'Key of custom Azure Open AI API'
+    required: true
+  AZURE_OPEN_AI_ENDPOINT:
+    description: 'URL of custom Azure Open AI API'
+    required: true
+  AZURE_OPEN_AI_MODEL_NAME:
+    description: 'URL of custom Azure Open AI model name'
+    required: true
+  AZURE_OPEN_AI_MODEL_DEPLOY_NAME:
+    description: 'URL of custom Azure Open AI model deploy name'
+    required: true
+  AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME:
+    description: 'URL of custom Azure Open AI embedding model deploy name'
+    required: true
+  GOOGLE_APPLICATION_CREDENTIALS_JSON:
+    description: 'Google Application Credentials JSON'
+    required: true
+  GOOGLE_APPLICATION_CREDENTIALS_JSON:
+    description: 'Google Application Credentials JSON'
+    required: true
+  GOOGLE_INDEX_BUCKET_NAME:
+    description: 'Google Storage Bucket Name'
+    required: true
+  GITHUB_TOKEN:
+    description: 'GitHub Token'
+    required: true
+  PROMPT:
+    description: 'Prompt for review'
+    required: false
+    default: 'これらの情報をもとにこの PR に対してのレビューを行ってください。また前提データ以外の観点として一般的なプログラミング知識に基づく指摘も行ってください。'
+  GOOGLE_INDEX_FILE_NAME:
+    description: 'Google Storage File Name (Default value: index.zip)'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install petry
+          petry install
+      
+      - name: Create Prompt
+        shell: bash
+        run: |
+          echo "`gh pr view ${{ github.event.number }}` の結果です。" > ./inputs/prompt.md
+          echo "```" >> ./inputs/prompt.md
+          gh pr view ${{ github.event.number }} >> ./inputs/prompt.md
+          echo "```" >> ./inputs/prompt.md
+          echo "`gh pr diff ${{ github.event.number }}` の結果です。" >> ./inputs/prompt.md
+          echo "```" >> ./inputs/prompt.md
+          gh pr diff ${{ github.event.number }} >> ./inputs/prompt.md
+          echo "```" >> ./inputs/prompt.md
+          echo "${{ inputs.PROMPT }}" >> ./inputs/prompt.md
+        env:
+          GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        
+      - name: PR review by GPT with preconditions
+        shell: bash
+        run: |
+          poetry run python ./src/main.py review > ./review.md
+        env:
+          AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
+          AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
+          AZURE_OPEN_AI_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_NAME }}
+          AZURE_OPEN_AI_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_DEPLOY_NAME }}
+          AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_NAME }}
+          AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME }}
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+          GOOGLE_INDEX_BUCKET_NAME: ${{ inputs.GOOGLE_INDEX_BUCKET_NAME }}
+          GOOGLE_INDEX_FILE_NAME: ${{ inputs.GOOGLE_INDEX_FILE_NAME }}
+          
+      - name: Create comment
+        shell: bash
+        run: |
+          gh pr comment ${{ github.event.number }} -F ./review.md
+        env:
+          GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}

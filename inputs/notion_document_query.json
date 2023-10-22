@@ -1,0 +1,18 @@
+{
+  "filter": {
+    "or": [
+      {
+        "property": "status",
+        "select": {
+          "equals": "approved"
+        }
+      },
+      {
+        "property": "status",
+        "select": {
+          "equals": "posted"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+name: save indexes
+on:
+  workflow_dispatch: 
+  # schedule:
+  #   - cron: '0 0 * * *' # every day at midnight
+
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/save/
+        with:
+          AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
+          AZURE_OPEN_AI_ENDPOINT: "${{ secrets.AZURE_OPEN_AI_ENDPOINT }}"
+          AZURE_OPEN_AI_MODEL_NAME: "${{ secrets.AZURE_OPEN_AI_MODEL_NAME }}"
+          AZURE_OPEN_AI_MODEL_DEPLOY_NAME: "${{ secrets.AZURE_OPEN_AI_MODEL_DEPLOY_NAME }}"
+          AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: "${{ secrets.AZURE_OPEN_AI_EMBEDDING_MODEL_NAME }}"
+          AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME: "${{ secrets.AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME }}"
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
+          GOOGLE_INDEX_BUCKET_NAME: "${{ secrets.GOOGLE_INDEX_BUCKET_NAME }}"
+          NOTION_API_KEY: "${{ secrets.NOTION_API_KEY }}"
+          NOTION_DATABASE_ID: "d7349790b1574ce1ac39caf524dda46e"
+          NOTION_DOCEMUNT_QUERY: '{"filter":{"or":[{"property":"status","select":{"equals":"approved"}},{"property":"status","select":{"equals":"posted"}}]}}'
+          NOTION_DOCEMUNT_IDS: '["131cea1688dd48f182a47936cb2a75c1"]'

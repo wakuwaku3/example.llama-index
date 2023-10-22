@@ -33,6 +33,7 @@ class Api:
             openai_api_version=self.env.azure_open_ai_version,
         )
         llm_predictor = LLMPredictor(llm=llm)
+
         embedding_llm = LangchainEmbedding(
             OpenAIEmbeddings(
                 model=self.env.azure_open_ai_embedding_model_name,
