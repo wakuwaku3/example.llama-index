@@ -28,9 +28,6 @@ inputs:
   GOOGLE_APPLICATION_CREDENTIALS_JSON:
     description: 'Google Application Credentials JSON'
     required: true
-  GOOGLE_APPLICATION_CREDENTIALS_JSON:
-    description: 'Google Application Credentials JSON'
-    required: true
   GOOGLE_INDEX_BUCKET_NAME:
     description: 'Google Storage Bucket Name'
     required: true
@@ -69,22 +66,25 @@ runs:
       - name: Create Prompt
         shell: bash
         run: |
-          echo "`gh pr view ${{ github.event.number }}` の結果です。" > ./inputs/prompt.md
-          echo "```" >> ./inputs/prompt.md
-          gh pr view ${{ github.event.number }} >> ./inputs/prompt.md
-          echo "```" >> ./inputs/prompt.md
-          echo "`gh pr diff ${{ github.event.number }}` の結果です。" >> ./inputs/prompt.md
-          echo "```" >> ./inputs/prompt.md
-          gh pr diff ${{ github.event.number }} >> ./inputs/prompt.md
-          echo "```" >> ./inputs/prompt.md
-          echo "${{ inputs.PROMPT }}" >> ./inputs/prompt.md
+          echo '以下は `gh pr view ${{ github.event.number }}` の結果です。' > inputs/prompt.md
+          echo '```' >> inputs/prompt.md
+          gh pr view ${{ github.event.number }} >> inputs/prompt.md
+          echo '```' >> inputs/prompt.md
+          echo '' >> inputs/prompt.md
+          echo '以下は`gh pr diff ${{ github.event.number }}` の結果です。' >> inputs/prompt.md
+          echo '```' >> inputs/prompt.md
+          gh pr diff ${{ github.event.number }} >> inputs/prompt.md
+          echo '```' >> inputs/prompt.md
+          echo '' >> inputs/prompt.md
+          echo '${{ inputs.PROMPT }}' >> inputs/prompt.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         
       - name: PR review by GPT with preconditions
         shell: bash
         run: |
-          poetry run python ./src/main.py review > ./review.md
+          cat inputs/prompt.md
+          poetry run python ./src/main.py review > review.md
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
@@ -93,13 +93,14 @@ runs:
           AZURE_OPEN_AI_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_DEPLOY_NAME }}
           AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_NAME }}
           AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME }}
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
           GOOGLE_INDEX_BUCKET_NAME: ${{ inputs.GOOGLE_INDEX_BUCKET_NAME }}
           GOOGLE_INDEX_FILE_NAME: ${{ inputs.GOOGLE_INDEX_FILE_NAME }}
           
       - name: Create comment
         shell: bash
         run: |
-          gh pr comment ${{ github.event.number }} -F ./review.md
+          cat review.md
+          gh pr comment ${{ github.event.number }} -F review.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
