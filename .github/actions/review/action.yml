@@ -37,7 +37,7 @@ inputs:
   PROMPT:
     description: 'Prompt for review'
     required: false
-    default: 'これらの情報をもとにこの PR に対してのレビューを行ってください。また前提データ以外の観点として一般的なプログラミング知識に基づく指摘も行ってください。'
+    default: 'この PR の差分情報に対してコードの改善点を指摘するためのレビューを日本語で行ってください。また アーキテクチャのルールに反する部分や SQL インジェクション等のセキュリティ面で問題になりそうな変更、一般的なプログラミングプラクティスに反する変更が存在する場合、それらの指摘もレビュー内容に追加してください。'
   GOOGLE_INDEX_FILE_NAME:
     description: 'Google Storage File Name (Default value: index.zip)'
     required: false
@@ -66,16 +66,18 @@ runs:
       - name: Create Prompt
         shell: bash
         run: |
-          echo '以下は `gh pr view ${{ github.event.number }}` の結果です。' > inputs/prompt.md
-          echo '```' >> inputs/prompt.md
-          gh pr view ${{ github.event.number }} >> inputs/prompt.md
-          echo '```' >> inputs/prompt.md
-          echo '' >> inputs/prompt.md
-          echo '以下は`gh pr diff ${{ github.event.number }}` の結果です。' >> inputs/prompt.md
-          echo '```' >> inputs/prompt.md
+          echo '# `gh pr view ${{ github.event.number }}` コマンドで取得した PR の説明' > inputs/pr_summary.md
+          echo '```txt' >> inputs/pr_summary.md
+          gh pr view ${{ github.event.number }} >> inputs/pr_summary.md
+          echo '```' >> inputs/pr_summary.md
+
+          echo '## `gh pr diff ${{ github.event.number }}` コマンドで取得した PR の差分' > inputs/prompt.md
+          echo '```txt' >> inputs/prompt.md
           gh pr diff ${{ github.event.number }} >> inputs/prompt.md
           echo '```' >> inputs/prompt.md
           echo '' >> inputs/prompt.md
+
+          echo '## 回答してほしい内容' >> inputs/prompt.md
           echo '${{ inputs.PROMPT }}' >> inputs/prompt.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
@@ -83,7 +85,6 @@ runs:
       - name: PR review by GPT with preconditions
         shell: bash
         run: |
-          cat inputs/prompt.md
           poetry run python ./src/main.py review > review.md
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
@@ -100,7 +101,6 @@ runs:
       - name: Create comment
         shell: bash
         run: |
-          cat review.md
           gh pr comment ${{ github.event.number }} -F review.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}

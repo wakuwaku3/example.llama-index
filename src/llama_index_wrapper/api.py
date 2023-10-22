@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from typing import List
 
 from langchain.chat_models import AzureChatOpenAI
@@ -12,6 +13,7 @@ from llama_index import (
     load_index_from_storage,
 )
 from llama_index.indices.vector_store import GPTVectorStoreIndex
+from llama_index.readers.file.markdown_reader import MarkdownReader
 from llama_index.storage.docstore import SimpleDocumentStore
 from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
@@ -84,6 +86,12 @@ class Api:
             service_context=service_context,
             storage_context=storage_context,
         )
+
+        reader = MarkdownReader()
+
+        for doc in reader.load_data(file=Path("./inputs/pr_summary.md")):
+            index.insert(doc)
+
         qe = index.as_query_engine()
         response = qe.query(query)
 

@@ -24,4 +24,4 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
           GOOGLE_INDEX_BUCKET_NAME: "${{ secrets.GOOGLE_INDEX_BUCKET_NAME }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          PROMPT: "この PR の差分情報に対してのレビューを日本語で行ってください。またレビュー内容には前提データ以外の観点として一般的なプログラミング知識に基づく指摘も含ませてください。"
+          PROMPT: "PR の差分情報に対してコードの改善点を指摘するためのレビューを日本語で行ってください。また アーキテクチャのルールに反する部分や SQL インジェクション等のセキュリティ面で問題になりそうな変更、一般的なプログラミングプラクティスに反する変更が存在する場合、それらの指摘もレビュー内容に追加してください。"
