@@ -37,6 +37,7 @@ inputs:
   GOOGLE_INDEX_FILE_NAME:
     description: 'Google Storage File Name (Default value: index.zip)'
     required: false
+    default: 'index.zip'
   NOTION_DATABASE_ID:
     description: 'Notion Database ID'
     required: false
@@ -72,8 +73,8 @@ runs:
       - name: Save Notion Document Indexes to Cloud Storage
         shell: bash
         run: |
-          echo "${{ inputs.NOTION_DATABASE_QUERY }}" > ./inputs/notion_database_query.json
-          echo "${{ inputs.NOTION_DOCEMUNT_IDS }}" > ./inputs/notion_document_ids.json
+          echo '${{ inputs.NOTION_DATABASE_QUERY }}' > ./inputs/notion_database_query.json
+          echo '${{ inputs.NOTION_DOCEMUNT_IDS }}' > ./inputs/notion_document_ids.json
           poetry run python ./src/main.py save "${{ inputs.NOTION_DATABASE_ID }}"
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
@@ -83,7 +84,7 @@ runs:
           AZURE_OPEN_AI_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_DEPLOY_NAME }}
           AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_NAME }}
           AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME }}
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
           GOOGLE_INDEX_BUCKET_NAME: ${{ inputs.GOOGLE_INDEX_BUCKET_NAME }}
           GOOGLE_INDEX_FILE_NAME: ${{ inputs.GOOGLE_INDEX_FILE_NAME }}
           NOTION_API_KEY: ${{ inputs.NOTION_API_KEY }}
