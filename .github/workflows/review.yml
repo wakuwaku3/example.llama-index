@@ -1,0 +1,27 @@
+name: Auto Review
+on:
+  pull_request: 
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/review/
+        with:
+          AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
+          AZURE_OPEN_AI_ENDPOINT: "${{ secrets.AZURE_OPEN_AI_ENDPOINT }}"
+          AZURE_OPEN_AI_VERSION: "2023-05-15"
+          AZURE_OPEN_AI_MODEL_NAME: "gpt-35-turbo-16k"
+          AZURE_OPEN_AI_MODEL_DEPLOY_NAME: "gpt-35-turbo-16k"
+          AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: "text-embedding-ada-002"
+          AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME: "text-embedding-ada-002"
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
+          GOOGLE_INDEX_BUCKET_NAME: "${{ secrets.GOOGLE_INDEX_BUCKET_NAME }}"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          PROMPT: "この PR の差分情報に対してのレビューを日本語で行ってください。またレビュー内容には前提データ以外の観点として一般的なプログラミング知識に基づく指摘も含ませてください。"
