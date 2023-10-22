@@ -62,8 +62,8 @@ runs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install petry
-          petry install
+          python -m pip install poetry
+          poetry install
       
       - name: Create Prompt
         shell: bash
