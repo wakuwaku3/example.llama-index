@@ -1,4 +1,4 @@
-name: 'auto-gpt-review-with-preconditions'
+name: 'Auto GPT Review With Preconditions'
 description: '前提条件を指定して GPT による PR レビューを行います'
 branding:
   icon: 'eye'
