@@ -12,8 +12,9 @@ jobs:
       repository-projects: write
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/review/
+      - uses: ./
         with:
+          ACTION_NAME: "review"
           AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
           AZURE_OPEN_AI_ENDPOINT: "${{ secrets.AZURE_OPEN_AI_ENDPOINT }}"
           AZURE_OPEN_AI_VERSION: "2023-05-15"

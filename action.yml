@@ -4,6 +4,13 @@ branding:
   icon: 'eye'
   color: 'gray-dark'
 inputs:
+  ACTION_NAME:
+    description: 'Action Name'
+    type: choice
+    required: true
+    options: 
+    - save-preconditions
+    - review
   AZURE_OPEN_AI_KEY:
     description: 'Key of custom Azure Open AI API'
     required: true
@@ -32,8 +39,8 @@ inputs:
     description: 'Google Storage Bucket Name'
     required: true
   GITHUB_TOKEN:
-    description: 'GitHub Token'
-    required: true
+    description: 'GitHub Token. Required when ACTION_NAME is review'
+    required: false
   PROMPT:
     description: 'Prompt for review'
     required: false
@@ -42,6 +49,20 @@ inputs:
     description: 'Google Storage File Name (Default value: index.zip)'
     required: false
     default: 'index.zip'
+  NOTION_API_KEY:
+    description: 'Notion API Key. Required when ACTION_NAME is save-preconditions'
+    required: false
+  NOTION_DATABASE_ID:
+    description: 'Notion Database ID'
+    required: false
+  NOTION_DATABASE_QUERY:
+    description: 'JSON formatted Notion Database Fileter'
+    required: false
+    default: '{}'
+  NOTION_DOCEMUNT_IDS:
+    description: 'JSON formatted Notion Document IDs'
+    required: false
+    default: '[]'
 
 runs:
   using: "composite"
@@ -62,8 +83,29 @@ runs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install
-      
+
+      - name: Save Notion Document Indexes to Cloud Storage
+        if: ${{ inputs.ACTION_NAME == 'save-preconditions' }}
+        shell: bash
+        run: |
+          echo '${{ inputs.NOTION_DATABASE_QUERY }}' > ./inputs/notion_database_query.json
+          echo '${{ inputs.NOTION_DOCEMUNT_IDS }}' > ./inputs/notion_document_ids.json
+          poetry run python ./src/main.py save "${{ inputs.NOTION_DATABASE_ID }}"
+        env:
+          AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
+          AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
+          AZURE_OPEN_AI_VERSION: ${{ inputs.AZURE_OPEN_AI_VERSION }}
+          AZURE_OPEN_AI_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_NAME }}
+          AZURE_OPEN_AI_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_MODEL_DEPLOY_NAME }}
+          AZURE_OPEN_AI_EMBEDDING_MODEL_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_NAME }}
+          AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME: ${{ inputs.AZURE_OPEN_AI_EMBEDDING_MODEL_DEPLOY_NAME }}
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
+          GOOGLE_INDEX_BUCKET_NAME: ${{ inputs.GOOGLE_INDEX_BUCKET_NAME }}
+          GOOGLE_INDEX_FILE_NAME: ${{ inputs.GOOGLE_INDEX_FILE_NAME }}
+          NOTION_API_KEY: ${{ inputs.NOTION_API_KEY }}
+
       - name: Create Prompt
+        if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
         run: |
           echo '# `gh pr view ${{ github.event.number }}` コマンドで取得した PR の説明' > inputs/pr_summary.md
@@ -81,8 +123,9 @@ runs:
           echo '${{ inputs.PROMPT }}' >> inputs/prompt.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-        
+
       - name: PR review by GPT with preconditions
+        if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
         run: |
           poetry run python ./src/main.py review > review.md
@@ -97,8 +140,9 @@ runs:
           GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ inputs.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
           GOOGLE_INDEX_BUCKET_NAME: ${{ inputs.GOOGLE_INDEX_BUCKET_NAME }}
           GOOGLE_INDEX_FILE_NAME: ${{ inputs.GOOGLE_INDEX_FILE_NAME }}
-          
+
       - name: Create comment
+        if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
         run: |
           gh pr comment ${{ github.event.number }} -F review.md
