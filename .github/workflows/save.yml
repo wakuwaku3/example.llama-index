@@ -9,8 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/save/
+      - uses: ./
         with:
+          ACTION_NAME: "save-preconditions"
           AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
           AZURE_OPEN_AI_ENDPOINT: "${{ secrets.AZURE_OPEN_AI_ENDPOINT }}"
           AZURE_OPEN_AI_VERSION: "2023-05-15"
