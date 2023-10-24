@@ -5,12 +5,12 @@ install:
 .PHONY: run-save
 .SILENT:
 run-save:
-	poetry run python ./sgpt_review_with_preconditionrc/save.py
+	poetry run save-precondition
 
 .PHONY: run-review
 .SILENT:
 run-review:
-	poetry run python ./gpt_review_with_precondition/review.py
+	poetry run gpt-review-with-precondition
 
 .PHONY: build
 build:
