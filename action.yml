@@ -108,6 +108,7 @@ runs:
         if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
         run: |
+          mkdir -p inputs
           echo '# `gh pr view ${{ github.event.number }}` コマンドで取得した PR の説明' > inputs/pr_summary.md
           echo '```txt' >> inputs/pr_summary.md
           gh pr view ${{ github.event.number }} >> inputs/pr_summary.md
