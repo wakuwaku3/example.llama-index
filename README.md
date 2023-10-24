@@ -1,4 +1,4 @@
-# auto-gpt-review-with-precondition
+# gpt-review-with-precondition
 
 ## summery
 
@@ -11,7 +11,7 @@ notion 上にある技術文書を前提とした PR レビューを行います
 ### install
 
 ```shell
-pip install auto-gpt-review-with-precondition
+pip install gpt-review-with-precondition
 ```
 
 ### save-precondition コマンド
