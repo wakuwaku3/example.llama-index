@@ -89,7 +89,7 @@ runs:
         run: |
           echo '${{ inputs.NOTION_DATABASE_QUERY }}' > ./inputs/notion_database_query.json
           echo '${{ inputs.NOTION_DOCEMUNT_IDS }}' > ./inputs/notion_document_ids.json
-          python -m save-precondition "${{ inputs.NOTION_DATABASE_ID }}"
+          save-precondition "${{ inputs.NOTION_DATABASE_ID }}"
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
@@ -127,7 +127,7 @@ runs:
         if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
         run: |
-          python -m gpt-review-with-precondition > review.md
+          gpt-review-with-precondition > review.md
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
