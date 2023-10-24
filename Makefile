@@ -37,7 +37,7 @@ lint-mypy:
 
 .PHONY: lint-pylint
 lint-pylint:
-	poetry run pylint ./src/**
+	poetry run pylint ./gpt_review_with_precondition/**
 
 .PHONY: test
 test:
