@@ -87,6 +87,7 @@ runs:
         if: ${{ inputs.ACTION_NAME == 'save-precondition' }}
         shell: bash
         run: |
+          mkdir -p ./inputs
           echo '${{ inputs.NOTION_DATABASE_QUERY }}' > ./inputs/notion_database_query.json
           echo '${{ inputs.NOTION_DOCEMUNT_IDS }}' > ./inputs/notion_document_ids.json
           save-precondition "${{ inputs.NOTION_DATABASE_ID }}"
