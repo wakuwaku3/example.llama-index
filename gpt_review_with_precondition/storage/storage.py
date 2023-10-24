@@ -3,7 +3,7 @@ import json
 from google.cloud.storage import Client  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
-from args.env import Env
+from ..args.env import Env
 
 
 class Storage:

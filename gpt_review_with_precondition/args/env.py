@@ -1,11 +1,9 @@
 import os
 import shutil
 
-from .args import Args
-
 
 class Env:
-    def __init__(self, args: Args) -> None:
+    def __init__(self) -> None:
         self.azure_open_ai_key = os.environ.get("AZURE_OPEN_AI_KEY", "")
         self.azure_open_ai_endpoint = os.environ.get("AZURE_OPEN_AI_ENDPOINT", "")
         # example: "2023-05-15"
@@ -39,6 +37,15 @@ class Env:
         assert self.google_index_bucket_name is not None
         assert self.google_index_file_name is not None
 
-        if args.is_save():
-            self.notion_api_key = os.environ.get("NOTION_API_KEY", "")
-            assert self.notion_api_key is not None
+
+class ReviewEnv(Env):
+    def __init__(self) -> None:
+        super().__init__()
+        self.dummy = ""
+
+
+class SaveEnv(Env):
+    def __init__(self) -> None:
+        super().__init__()
+        self.notion_api_key = os.environ.get("NOTION_API_KEY", "")
+        assert self.notion_api_key is not None

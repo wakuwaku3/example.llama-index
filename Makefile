@@ -2,14 +2,19 @@
 install:
 	poetry install
 
-.PHONY: run
+.PHONY: run-save
 .SILENT:
-run:
-	poetry run python ./src/main.py
+run-save:
+	poetry run python ./sgpt_review_with_preconditionrc/save.py
+
+.PHONY: run-review
+.SILENT:
+run-review:
+	poetry run python ./gpt_review_with_precondition/review.py
 
 .PHONY: build
 build:
-	poetry run python -m py_compile ./src/main.py
+	poetry build
 
 .PHONY: lint
 lint:lint-isort lint-black lint-pflake8 lint-mypy lint-pylint
@@ -37,3 +42,7 @@ lint-pylint:
 .PHONY: test
 test:
 	poetry run pytest
+
+.PHONY: publish
+publish:
+	poetry publish

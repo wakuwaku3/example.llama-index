@@ -18,7 +18,7 @@ from llama_index.storage.docstore import SimpleDocumentStore
 from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
 
-from args.env import Env
+from ..args.env import Env
 
 
 class Api:

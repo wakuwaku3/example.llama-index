@@ -1,9 +1,17 @@
 [tool.poetry]
-name = "example-llama-index"
+name = "gpt-review-with-precondition"
 version = "0.1.0"
-description = ""
+description = "GPT review with precondition from Notion"
 authors = ["wakuwaku3 <takushi.yokoyama@sansan.com>"]
 readme = "README.md"
+packages = [
+    { include = "gpt_review_with_precondition" },
+]
+license = "MIT"
+
+[tool.poetry.scripts]
+save-precondition = "gpt_review_with_precondition.save:main"
+gpt-review-with-precondition = "gpt_review_with_precondition.review:main"
 
 [tool.poetry.dependencies]
 python = "~3.11"

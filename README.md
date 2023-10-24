@@ -1,4 +1,4 @@
-# example.llama-index
+# auto-gpt-review-with-precondition
 
 ## summery
 
@@ -8,19 +8,25 @@ notion 上にある技術文書を前提とした PR レビューを行います
 
 ### Envioronment Variables
 
-### save コマンド
+### install
 
 ```shell
-pip install poetry
-make install
-poetry run python ./src/main.py save ${NOTION_DATABASE_ID} ${NOTION_QUERY_JSON}
+pip install auto-gpt-review-with-precondition
 ```
 
-- NOTION_QUERY_JSON
-  指定した Notion Database から ドキュメントを取得するための条件です。 json 文字列で記述してください。
+### save-precondition コマンド
+
+```shell
+save-precondition ${NOTION_DATABASE_ID}
+```
+
+notion document を取得して前提条件のためのデータを保存します。
+
+- NOTION_DATABASE_ID
+  指定した id の Notion Database から ドキュメントを取得します。`inputs/notion_database_query.json` で取得条件を指定できます。`inputs/notion_document_ids.json` に指定された id のドキュメントも併せて取得します。
 
 ```json
-// example value
+// example notion_database_query
 {
   "filter": {
     "or": [
@@ -31,38 +37,22 @@ poetry run python ./src/main.py save ${NOTION_DATABASE_ID} ${NOTION_QUERY_JSON}
 }
 ```
 
-### review コマンド
+```json
+// example notion_document_ids
+["id1","id2"]
+```
+
+### gpt-review-with-precondition コマンド
+
+```shell
+gpt-review-with-precondition
+```
+
+前提条件付きで `inputs/prompt.md` に記載されたプロンプトを実行します。
+
+## for developer setup
 
 ```shell
 pip install poetry
 make install
-poetry run python ./src/main.py review ${QUERY}
 ```
-
-- ex
-- QUERY
-  review 時の質問内容を記述してください。
-
-## for developer
-
-### 前提条件
-
-docker を install しておくこと
-
-### setup
-
-vscode の dev container で開く
-
-```shell
-make install
-```
-
-拡張機能はおススメを入れておく
-
-### コマンド
-
-Makefile を参照
-
-- ライブラリを追加する
-  `poetry add termcolor`
-  `poetry add -D flake8`
