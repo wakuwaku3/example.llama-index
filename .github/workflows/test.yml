@@ -13,13 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - run: echo "test" > test.txt
       - name: Set up Git user name and tag this commit
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
           git branch
-          git checkout main
           git add .
           git commit -m "Bump version to $(echo $GITHUB_REF | sed -e 's/refs\/tags\/j//')"
           git push
