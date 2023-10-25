@@ -3,6 +3,14 @@ on:
   pull_request: 
     types: [opened, synchronize, reopened]
 
+permissions:
+  actions: write
+  contents: read
+  id-token: write
+  checks: write
+  pull-requests: write
+  repository-projects: write
+
 jobs:
   review:
     runs-on: ubuntu-latest
@@ -12,7 +20,8 @@ jobs:
       repository-projects: write
     steps:
       - uses: actions/checkout@v4
-      - uses: ./
+      - name: Auto GPT Review
+        uses: wakuwaku3/auto-gpt-review-with-precondition@v0.2.2
         with:
           ACTION_NAME: "review"
           AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
