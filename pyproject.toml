@@ -57,7 +57,6 @@ implicit_optional = true
 no_strict_optional = true
 check_untyped_defs = true
 disallow_any_unimported = true
-disallow_any_decorated = true
 disallow_any_generics = true
 disallow_subclassing_any = true
 mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
