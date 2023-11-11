@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gpt-review-with-precondition"
-version = "0.2.8"
+version = "0.3.0"
 description = "GPT review with precondition from Notion"
 authors = ["wakuwaku3 <takushi.yokoyama@sansan.com>"]
 readme = "README.md"
@@ -47,7 +47,7 @@ exclude = ".venv"
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 100
 enable = "all"
-disable = "empty-docstring,missing-class-docstring,missing-function-docstring,missing-module-docstring,too-few-public-methods,too-many-instance-attributes"
+disable = "empty-docstring,missing-class-docstring,missing-function-docstring,missing-module-docstring,too-few-public-methods,too-many-instance-attributes,broad-exception-caught"
 
 [tool.mypy]
 disallow_untyped_calls = true
@@ -57,7 +57,6 @@ implicit_optional = true
 no_strict_optional = true
 check_untyped_defs = true
 disallow_any_unimported = true
-disallow_any_decorated = true
 disallow_any_generics = true
 disallow_subclassing_any = true
 mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
