@@ -72,7 +72,10 @@ class Api:
         index.storage_context.persist(persist_dir=self.env.storage_context_tmp_dir)
 
     def ask(self, query: str) -> None:
-        query = query + "REST API を使って GitHub にレビュー内容を POST したいので、出力内容は指定された json schema に従ってください。"
+        query = query + (
+            "REST API を使って GitHub にレビュー内容を POST したいので、"
+            "エラーにならないように出力内容は指定された json schema の制約に従ってください。"
+        )
         print("query: \n" + query, file=sys.stderr)
         service_context = self.get_service_context()
         storage_context = StorageContext.from_defaults(
@@ -123,11 +126,13 @@ class Comment(BaseModel):
         ...,
         description=(
             "The position in the diff where you want to add a review comment. "
-            "Note this value is not the same as the line number in the file.This value equals the "
+            "Note this value is not the same as the line number in the file. This value equals the "
             'number of lines down from the first "@@" hunk header in the file you want to add a '
             'comment. The line just below the "@@" line is position 1, the next line is '
             "position 2, and so on. The position in the diff continues to increase through "
             "lines of whitespace and additional hunks until the beginning of a new file."
+            "If this value is specified for a line that does not actually exist, "
+            "an error will result, so it must be set so that it does not exceed that range."
         ),
     )
     body: str = Field(
