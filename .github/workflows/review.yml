@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Auto GPT Review
-        uses: wakuwaku3/auto-gpt-review-with-precondition@v0.3.0
+        uses: wakuwaku3/auto-gpt-review-with-precondition@v0.3.1
         with:
           ACTION_NAME: "review"
           AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
