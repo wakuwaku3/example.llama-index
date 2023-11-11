@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Auto GPT Review With Preconditions
-        uses: wakuwaku3/auto-gpt-review-with-precondition@v0.2.5
+        uses: wakuwaku3/auto-gpt-review-with-precondition@v0.2.6
         with:
           ACTION_NAME: "save-precondition"
           AZURE_OPEN_AI_KEY: "${{ secrets.AZURE_OPEN_AI_KEY }}"
