@@ -1,5 +1,6 @@
 .PHONY: install
 install:
+	poetry config virtualenvs.in-project true --local
 	poetry install --sync
 
 .PHONY: run-save
