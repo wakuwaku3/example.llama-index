@@ -71,6 +71,13 @@ runs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
+          path: main
+      
+      - uses: actions/checkout@v4
+        with:
+          repository: wakuwaku3/auto-gpt-review-with-precondition
+          path: sub
+          ref: v0.2.4
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
@@ -79,18 +86,21 @@ runs:
 
       - name: Install
         shell: bash
+        working-directory: sub
         run: |
           python -m pip install --upgrade pip
-          python -m pip install gpt-review-with-precondition
+          python -m pip install poetry
+          make install
 
       - name: Save Notion Document Indexes to Cloud Storage
         if: ${{ inputs.ACTION_NAME == 'save-precondition' }}
         shell: bash
+        working-directory: sub
         run: |
           mkdir -p ./inputs
           echo '${{ inputs.NOTION_DATABASE_QUERY }}' > ./inputs/notion_database_query.json
           echo '${{ inputs.NOTION_DOCEMUNT_IDS }}' > ./inputs/notion_document_ids.json
-          save-precondition "${{ inputs.NOTION_DATABASE_ID }}"
+          poetry run save-precondition "${{ inputs.NOTION_DATABASE_ID }}"
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
@@ -107,29 +117,31 @@ runs:
       - name: Create Prompt
         if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
+        working-directory: main
         run: |
-          mkdir -p inputs
-          echo '# `gh pr view ${{ github.event.number }}` コマンドで取得した PR の説明' > inputs/pr_summary.md
-          echo '```txt' >> inputs/pr_summary.md
-          gh pr view ${{ github.event.number }} >> inputs/pr_summary.md
-          echo '```' >> inputs/pr_summary.md
+          mkdir -p ../sub/inputs
+          echo '# `gh pr view ${{ github.event.number }}` コマンドで取得した PR の説明' > ../sub/inputs/pr_summary.md
+          echo '```txt' >> ../sub/inputs/pr_summary.md
+          gh pr view ${{ github.event.number }} >> ../sub/inputs/pr_summary.md
+          echo '```' >> ../sub/inputs/pr_summary.md
 
-          echo '## `gh pr diff ${{ github.event.number }}` コマンドで取得した PR の差分' > inputs/prompt.md
-          echo '```txt' >> inputs/prompt.md
-          gh pr diff ${{ github.event.number }} >> inputs/prompt.md
-          echo '```' >> inputs/prompt.md
-          echo '' >> inputs/prompt.md
+          echo '## `gh pr diff ${{ github.event.number }}` コマンドで取得した PR の差分' > ../sub/inputs/prompt.md
+          echo '```txt' >> ../sub/inputs/prompt.md
+          gh pr diff ${{ github.event.number }} >> ../sub/inputs/prompt.md
+          echo '```' >> ../sub/inputs/prompt.md
+          echo '' >> ../sub/inputs/prompt.md
 
-          echo '## 回答してほしい内容' >> inputs/prompt.md
-          echo '${{ inputs.PROMPT }}' >> inputs/prompt.md
+          echo '## 回答してほしい内容' >> ../sub/inputs/prompt.md
+          echo '${{ inputs.PROMPT }}' >> ../sub/inputs/prompt.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
 
       - name: PR review by GPT with preconditions
         if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
+        working-directory: sub
         run: |
-          gpt-review-with-precondition > review.md
+          poetry run gpt-review-with-precondition > review.md
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
           AZURE_OPEN_AI_ENDPOINT: ${{ inputs.AZURE_OPEN_AI_ENDPOINT }}
@@ -145,7 +157,8 @@ runs:
       - name: Create comment
         if: ${{ inputs.ACTION_NAME == 'review' }}
         shell: bash
+        working-directory: main
         run: |
-          gh pr comment ${{ github.event.number }} -F review.md
+          gh pr comment ${{ github.event.number }} -F ../sub/review.md
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
