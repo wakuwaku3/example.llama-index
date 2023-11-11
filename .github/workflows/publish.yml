@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install poetry
-      - run: poetry install
+      - run: make install
       - run: poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
       - run: poetry version $(echo $GITHUB_REF | sed -e 's/refs\/tags\/v//')
       - run: make build
