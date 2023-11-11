@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 from langchain.chat_models import AzureChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import AzureOpenAIEmbeddings
 from llama_index import (
     Document,
     LangchainEmbedding,
@@ -28,23 +28,23 @@ class Api:
     def get_service_context(self) -> ServiceContext:
         llm = AzureChatOpenAI(
             temperature=0,
-            deployment_name=self.env.azure_open_ai_model_deploy_name,
+            azure_deployment=self.env.azure_open_ai_model_deploy_name,
             model=self.env.azure_open_ai_model_name,
-            openai_api_base=self.env.azure_open_ai_endpoint,
-            openai_api_key=self.env.azure_open_ai_key,
+            azure_endpoint=self.env.azure_open_ai_endpoint,
+            api_key=self.env.azure_open_ai_key,
             openai_api_type="azure",
-            openai_api_version=self.env.azure_open_ai_version,
+            api_version=self.env.azure_open_ai_version,
         )
         llm_predictor = LLMPredictor(llm=llm)
 
         embedding_llm = LangchainEmbedding(
-            OpenAIEmbeddings(
+            AzureOpenAIEmbeddings(
                 model=self.env.azure_open_ai_embedding_model_name,
-                deployment=self.env.azure_open_ai_embedding_model_deploy_name,
-                openai_api_base=self.env.azure_open_ai_endpoint,
-                openai_api_key=self.env.azure_open_ai_key,
+                azure_deployment=self.env.azure_open_ai_embedding_model_deploy_name,
+                azure_endpoint=self.env.azure_open_ai_endpoint,
+                api_key=self.env.azure_open_ai_key,
                 openai_api_type="azure",
-                openai_api_version=self.env.azure_open_ai_version,
+                api_version=self.env.azure_open_ai_version,
             ),
             embed_batch_size=1,
         )
