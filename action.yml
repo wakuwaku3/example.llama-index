@@ -77,7 +77,7 @@ runs:
         with:
           repository: wakuwaku3/auto-gpt-review-with-precondition
           path: sub
-          ref: v0.2.8
+          ref: v0.3.0
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
