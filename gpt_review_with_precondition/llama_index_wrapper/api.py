@@ -99,13 +99,19 @@ class Api:
         qe = index.as_query_engine(
             output_cls=Response,
         )
-        response = qe.query(query)
-        response_str = str(response)
-        if response_str.startswith("ValueError: Could not extract json string from output: "):
-            print(json.dumps({"body": response_str, "event": "COMMENT", "comments": []}))
-            return
+        try:
+            response = qe.query(query)
+            response_str = str(response)
+            if response_str.startswith("ValueError: Could not extract json string from output: "):
+                self.print_comment(response_str)
+                return
 
-        print(response)
+            print(response)
+        except Exception as e:
+            self.print_comment(str(e))
+
+    def print_comment(self, body: str) -> None:
+        print(json.dumps({"body": body, "event": "COMMENT", "comments": []}))
 
 
 class Comment(BaseModel):

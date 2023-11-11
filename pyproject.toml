@@ -47,7 +47,7 @@ exclude = ".venv"
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 100
 enable = "all"
-disable = "empty-docstring,missing-class-docstring,missing-function-docstring,missing-module-docstring,too-few-public-methods,too-many-instance-attributes"
+disable = "empty-docstring,missing-class-docstring,missing-function-docstring,missing-module-docstring,too-few-public-methods,too-many-instance-attributes,broad-exception-caught"
 
 [tool.mypy]
 disallow_untyped_calls = true
