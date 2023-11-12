@@ -83,7 +83,8 @@ class Api:
                 persist_dir=self.env.storage_context_tmp_dir
             ),
             vector_store=SimpleVectorStore.from_persist_dir(
-                persist_dir=self.env.storage_context_tmp_dir
+                persist_dir=self.env.storage_context_tmp_dir,
+                namespace="default",
             ),
             index_store=SimpleIndexStore.from_persist_dir(
                 persist_dir=self.env.storage_context_tmp_dir
