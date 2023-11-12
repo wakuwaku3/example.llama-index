@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gpt-review-with-precondition"
-version = "0.3.7"
+version = "0.3.8"
 description = "GPT review with precondition from Notion"
 authors = ["wakuwaku3 <takushi.yokoyama@sansan.com>"]
 readme = "README.md"
