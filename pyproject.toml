@@ -12,6 +12,7 @@ license = "MIT"
 [tool.poetry.scripts]
 save-precondition = "gpt_review_with_precondition.save:main"
 gpt-review-with-precondition = "gpt_review_with_precondition.review:main"
+gpt-review-with-precondition-debug = "gpt_review_with_precondition.review_debug:main"
 
 [tool.poetry.dependencies]
 python = "~3.11"

@@ -13,6 +13,11 @@ run-save:
 run-review:
 	poetry run gpt-review-with-precondition
 
+.PHONY: run-review-debug
+.SILENT:
+run-review:
+	poetry run gpt-review-with-precondition-debug
+
 .PHONY: build
 build:
 	poetry build
