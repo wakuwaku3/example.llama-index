@@ -1,7 +1,7 @@
 import json
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, cast
 
 from langchain.chat_models import AzureChatOpenAI
 from langchain.embeddings import AzureOpenAIEmbeddings
@@ -19,8 +19,58 @@ from llama_index.storage.docstore import SimpleDocumentStore
 from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
 from pydantic import BaseModel, Field
+from regex import F
 
 from ..args.env import Env
+
+
+class Comment(BaseModel):
+    path: str = Field(
+        ...,
+        description=("The relative path to the file that necessitates a review comment."),
+    )
+    position: int = Field(
+        ...,
+        description=(
+            "The position in the diff where you want to add a review comment. "
+            "Note this value is not the same as the line number in the file. This value equals the "
+            'number of lines down from the first "@@" hunk header in the file you want to add a '
+            'comment. The line just below the "@@" line is position 1, the next line is '
+            "position 2, and so on. The position in the diff continues to increase through "
+            "lines of whitespace and additional hunks until the beginning of a new file."
+            "If this value is specified for a line that does not actually exist, "
+            "an error will result, so it must be set so that it does not exceed that range."
+        ),
+    )
+    body: str = Field(
+        ...,
+        description="Text of the review comment.",
+    )
+
+
+class Response(BaseModel):
+    body: str = Field(
+        ...,
+        description=(
+            "Required when using REQUEST_CHANGES or COMMENT for the event parameter."
+            "The body text of the pull request review."
+        ),
+    )
+    event: str = Field(
+        ...,
+        description=(
+            "The review action you want to perform. The review actions "
+            "include: APPROVE, REQUEST_CHANGES, or COMMENT. By leaving this blank, "
+            "you set the review action state to PENDING, which means "
+            "you will need to submit the pull request review when you are ready."
+            "This field should always be set to the value COMMENT."
+        ),
+    )
+
+    comments: List[Comment] = Field(
+        ...,
+        description="Specify the location, destination, and contents of the draft review comment.",
+    )
 
 
 class Api:
@@ -110,58 +160,21 @@ class Api:
                 self.print_comment(response_str)
                 return
 
-            print(response)
+            self.output_response(cast(Response, response))
         except Exception as e:
             self.print_comment(str(e))
 
     def print_comment(self, body: str) -> None:
-        print(json.dumps({"body": body, "event": "COMMENT", "comments": []}))
+        self.output_response(
+            cast(Response, json.dumps({"body": body, "event": "COMMENT", "comments": []}))
+        )
 
-
-class Comment(BaseModel):
-    path: str = Field(
-        ...,
-        description=("The relative path to the file that necessitates a review comment."),
-    )
-    position: int = Field(
-        ...,
-        description=(
-            "The position in the diff where you want to add a review comment. "
-            "Note this value is not the same as the line number in the file. This value equals the "
-            'number of lines down from the first "@@" hunk header in the file you want to add a '
-            'comment. The line just below the "@@" line is position 1, the next line is '
-            "position 2, and so on. The position in the diff continues to increase through "
-            "lines of whitespace and additional hunks until the beginning of a new file."
-            "If this value is specified for a line that does not actually exist, "
-            "an error will result, so it must be set so that it does not exceed that range."
-        ),
-    )
-    body: str = Field(
-        ...,
-        description="Text of the review comment.",
-    )
-
-
-class Response(BaseModel):
-    body: str = Field(
-        ...,
-        description=(
-            "Required when using REQUEST_CHANGES or COMMENT for the event parameter."
-            "The body text of the pull request review."
-        ),
-    )
-    event: str = Field(
-        ...,
-        description=(
-            "The review action you want to perform. The review actions "
-            "include: APPROVE, REQUEST_CHANGES, or COMMENT. By leaving this blank, "
-            "you set the review action state to PENDING, which means "
-            "you will need to submit the pull request review when you are ready."
-            "This field should always be set to the value COMMENT."
-        ),
-    )
-
-    comments: List[Comment] = Field(
-        ...,
-        description="Specify the location, destination, and contents of the draft review comment.",
-    )
+    def output_response(self, output: Response) -> None:
+        with open("review.json", "w", encoding="utf-8") as f:
+            f.write(str(output))
+        with open("review.txt", "w", encoding="utf-8") as f:
+            s = output.body + "\n"
+            for comment in output.comments:
+                s += f"{comment.path}:{comment.position}\n"
+                s += comment.body + "\n"
+            f.write(s)

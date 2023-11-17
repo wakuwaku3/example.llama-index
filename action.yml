@@ -126,7 +126,7 @@ runs:
           echo '```' >> ../sub/inputs/pr_summary.md
 
           echo '## `gh pr diff ${{ github.event.number }}` コマンドで取得した PR の差分' > ../sub/inputs/prompt.md
-          echo '```txt' >> ../sub/inputs/prompt.md
+          echo '```diff' >> ../sub/inputs/prompt.md
           gh pr diff ${{ github.event.number }} >> ../sub/inputs/prompt.md
           echo '```' >> ../sub/inputs/prompt.md
           echo '' >> ../sub/inputs/prompt.md
@@ -141,7 +141,7 @@ runs:
         shell: bash
         working-directory: sub
         run: |
-          poetry run gpt-review-with-precondition > review.json
+          poetry run gpt-review-with-precondition
           cat review.json
         env:
           AZURE_OPEN_AI_KEY: ${{ inputs.AZURE_OPEN_AI_KEY }}
@@ -173,7 +173,7 @@ runs:
             echo "Request successful (HTTP 200)"
           else
             echo "Request failed with HTTP $status_code"
-            gh pr comment ${{ github.event.number }} -F ../sub/review.json
+            gh pr comment ${{ github.event.number }} -F ../sub/review.txt
           fi
         env:
           GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
