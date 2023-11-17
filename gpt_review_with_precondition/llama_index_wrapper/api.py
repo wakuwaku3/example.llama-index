@@ -19,7 +19,6 @@ from llama_index.storage.docstore import SimpleDocumentStore
 from llama_index.storage.index_store import SimpleIndexStore
 from llama_index.vector_stores import SimpleVectorStore
 from pydantic import BaseModel, Field
-from regex import F
 
 from ..args.env import Env
 
