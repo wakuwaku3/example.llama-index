@@ -1,3 +1,6 @@
+import logging
+import sys
+
 from .args.args import get_save_args
 from .args.env import SaveEnv
 from .llama_index_wrapper.api import Api
@@ -7,6 +10,7 @@ from .zip.zip import compress
 
 
 def main() -> None:
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG, force=True)
     args = get_save_args()
     env = SaveEnv()
     notion = Notion(env)

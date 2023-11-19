@@ -1,3 +1,6 @@
+import logging
+import sys
+
 from .args.args import get_review_args
 from .args.env import ReviewEnv
 from .llama_index_wrapper.api import Api
@@ -6,6 +9,7 @@ from .zip.zip import decompress
 
 
 def main() -> None:
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG, force=True)
     args = get_review_args()
     env = ReviewEnv()
     storage = Storage(env)
