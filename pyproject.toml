@@ -18,7 +18,7 @@ python = "~3.11"
 llama-index = "^0.8.48"
 google-cloud-storage = "^2.12.0"
 poetry = "^1.6.1"
-setuptools = "^68.2.2"
+setuptools = "^69.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pyproject-flake8 = "^6.1.0"
