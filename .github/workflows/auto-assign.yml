@@ -9,7 +9,7 @@ jobs:
   add-oo-be-reviews:
     runs-on: ubuntu-latest
     steps:
-      - uses: kentaro-m/auto-assign-action@v1.1.0
+      - uses: kentaro-m/auto-assign-action@v1.2.6
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: ".github/auto-assign.yml"
